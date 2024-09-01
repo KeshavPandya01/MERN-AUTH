@@ -1,28 +1,17 @@
-import Nodemailer from "nodemailer";
+import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+
 dotenv.config();
-import { MailtrapTransport } from "mailtrap";
 
-const TOKEN = process.env.MAILTRAP_TOKEN;
+export const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+});
 
-const transport = Nodemailer.createTransport(
-  MailtrapTransport({
-    token: TOKEN,
-  })
-);
-
-const sender = {
-  address: "mailtrap@demomailtrap.com",
-  name: "MERN AUTH MAIL TESTER",
+export const sender = {
+  email: process.env.GMAIL_USER,
+  name: "Keshav",
 };
-const recipients = ["keshavpandya04@gmail.com"];
-
-transport
-  .sendMail({
-    from: sender,
-    to: recipients,
-    subject: "You are awesome!",
-    text: "Congrats for sending test email with Mailtrap!",
-    category: "Integration Test",
-  })
-  .then(console.log, console.error);
