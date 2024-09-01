@@ -2,6 +2,8 @@ import { transporter, sender } from "./mail.config.js";
 import {
   WELCOME_EMAIL_TEMPLATE,
   VERIFICATION_EMAIL_TEMPLATE,
+  PASSWORD_RESET_REQUEST_TEMPLATE,
+  PASSWORD_RESET_SUCCESS_TEMPLATE,
 } from "./emailTemplate.js";
 
 export const sendVerificationEmail = async (email, verificationToken) => {
@@ -40,3 +42,39 @@ export const sendWelcomeEmail = async (email, name) => {
     throw new Error(`Error sending welcome email: ${error}`);
   }
 };
+
+export const sendPasswordResetEmail = async(email, resetURL)=>{
+
+     try {
+       const mailOptions = {
+         from: `${sender.name} <${sender.email}>`,
+         to: email,
+         subject: "Reset your Password",
+         html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetURL),
+       };
+
+       const response = await transporter.sendMail(mailOptions);
+       console.log("Password Reset Mail Sent Successfully", response);
+     } catch (error) {
+       console.error(`Error sending password reset email to ${email}`, error);
+       throw new Error(`Error sending password reset email: ${error}`);
+     }
+}
+
+export const sendResetSuccessEmail = async(email)=>{
+    try {
+      const mailOptions = {
+        from: `${sender.name} <${sender.email}>`,
+        to: email,
+        subject: "Password Reset Successful",
+        html: PASSWORD_RESET_SUCCESS_TEMPLATE,
+      };
+
+      const response = await transporter.sendMail(mailOptions);
+      console.log("Password reset email sent successfully", response);
+      
+    } catch (error) {
+      console.error(`Error sending Password reset email to ${email}`, error);
+      throw new Error(`Error sending Password reset email: ${error}`);
+    }
+}
